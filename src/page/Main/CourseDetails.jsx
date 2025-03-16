@@ -40,7 +40,7 @@ const CourseDetails = () => {
           <img className="h-20 w-20 rounded-full mx-auto" src={logo} alt="" />
 
           <h1 className="text-4xl sm:text-5xl font-bold mt-5 sm:max-w-3xl mx-auto">
-            <span className="text-gray-300">Unlock Your Potential with</span> 
+            <span className="text-gray-300">Unlock Your Potential   </span> 
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-400"> {courseName}</span>
           </h1>
 

@@ -13,7 +13,7 @@ const MyCourseCard = ({course}) => {
             </div>
 
             <div>
-                <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-400">Unlock Your Potential with <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-gray-400">{courseName}</span></h1>
+                <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-400">Unlock Pro Academy  with <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-gray-400">{courseName}</span></h1>
 
                 <div className="mt-5 flex flex-col sm:flex-row gap-5">
                     <a href={privateGroup} target="_blank">

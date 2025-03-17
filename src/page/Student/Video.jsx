@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import useAuth from '@/Hooks/useAuth';
+import React, { useState, useEffect, useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -59,80 +60,25 @@ const styles = `
 
   .video-overlay {
     position: absolute;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 10px 20px;
+    border-radius: 5px;
     z-index: 10;
+    font-size: 16px;
+    font-weight: bold;
     max-width: 300px;
-    animation: moveEmail 0s linear infinite;
-    opacity: 0; /* Start invisible */
+    transition: all 2s ease-in-out;
+    cursor: pointer;
   }
-
- @keyframes moveEmail {
-  0% {
-    top: 20px;
-    left: 20px;
-    opacity: 1; /* Visible at Top Left */
-  }
-  10% {
-    opacity: 0; /* Fade out */
-  }
-  20% {
-    top: 20px;
-    left: calc(100% - 320px);
-    opacity: 1; /* Visible at Top Right */
-  }
-  30% {
-    opacity: 0; /* Fade out */
-  }
-  40% {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 1; /* Visible at Center */
-  }
-  50% {
-    opacity: 0; /* Fade out */
-  }
-  60% {
-    top: calc(100% - 60px);
-    left: 20px;
-    opacity: 1; /* Visible at Bottom Left */
-  }
-  70% {
-    opacity: 0; /* Fade out */
-  }
-  80% {
-    top: calc(100% - 60px);
-    left: calc(100% - 320px);
-    opacity: 1; /* Visible at Bottom Right */
-  }
-  90% {
-    opacity: 0; /* Fade out */
-  }
-  100% {
-    top: 20px;
-    left: 20px;
-    opacity: 1; /* Back to Top Left */
-  }
-}
-
-.elementToAnimate {
-  position: absolute;
-  animation: moveEmail 5s ease-in-out infinite; /* Apply the animation with infinite loop */
-  will-change: transform, opacity; /* Optimize performance */
-}
-
 
   @media (max-width: 768px) {
     .grid-container {
       grid-template-columns: 1fr;
     }
     .sidebar {
-      order: 2; /* Move sidebar below the main content */
+      order: 2;
     }
     .main-content {
-      order: 1; /* Move video player to the top */
+      order: 1;
     }
     .header-content {
       flex-direction: column;
@@ -147,56 +93,9 @@ const styles = `
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
     .video-overlay {
+      font-size: 14px;
+      padding: 8px 16px;
       max-width: 200px;
-    }
-
-    @keyframes moveEmail {
-      0% {
-        top: 10px;
-        left: 10px;
-        opacity: 1; /* Visible at Top Left */
-      }
-      10% {
-        opacity: 0; /* Fade out */
-      }
-      20% {
-        top: 10px;
-        left: calc(100% - 220px);
-        opacity: 1; /* Visible at Top Right */
-      }
-      30% {
-        opacity: 0; /* Fade out */
-      }
-      40% {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        opacity: 1; /* Visible at Center */
-      }
-      50% {
-        opacity: 0; /* Fade out */
-      }
-      60% {
-        top: calc(100% - 60px);
-        left: 10px;
-        opacity: 1; /* Visible at Bottom Left */
-      }
-      70% {
-        opacity: 0; /* Fade out */
-      }
-      80% {
-        top: calc(100% - 60px);
-        left: calc(100% - 220px);
-        opacity: 1; /* Visible at Bottom Right */
-      }
-      90% {
-        opacity: 0; /* Fade out */
-      }
-      100% {
-        top: 10px;
-        left: 10px;
-        opacity: 1; /* Back to Top Left */
-      }
     }
   }
 `;
@@ -248,29 +147,12 @@ const Accordion = ({ module, isOpen, onClick, selectedVideo, onVideoSelect, comp
   </div>
 );
 
-const VideoPlayer = ({ video, playbackSpeed, quality, volume }) => {
-  return (
-    <div className="relative aspect-video rounded-2xl overflow-hidden bg-black">
-      <iframe
-        className="w-full h-full"
-        src={`${video.url}?autoplay=1&mute=${volume === 0}&playback-rate=${playbackSpeed}&quality=${quality}`}
-        title={video.title}
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
-      {/* Overlay Email Text */}
-      <div className="video-overlay">
-        <p className="text-sm text-red-500">mdsaideehasan@gmail.com</p>
-      </div>
-    </div>
-  );
-};
+
 
 // Design Gallery Component
 const DesignGallery = () => {
   const handleCloneDesign = (designId) => {
     alert(`Cloning design ${designId}`);
-    // Add logic to clone the design (e.g., download or copy to clipboard)
   };
 
   return (
@@ -298,20 +180,90 @@ const VideoPlatform = () => {
   const [expandedModule, setExpandedModule] = useState(1);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [completedVideos, setCompletedVideos] = useState(() => {
-    // Load completed videos from local storage on initial load
     const savedCompletedVideos = localStorage.getItem('completedVideos');
     return savedCompletedVideos ? JSON.parse(savedCompletedVideos) : [];
   });
   const [volume, setVolume] = useState(1);
   const [quality, setQuality] = useState('hd1080');
-
+  const {user, profileUpdate, loading} = useAuth();
+  const VideoPlayer = ({ video, playbackSpeed, quality, volume }) => {
+    const videoContainerRef = useRef(null);
+    const [positionStyle, setPositionStyle] = useState({});
+    const [opacity, setOpacity] = useState(0);
+  
+    useEffect(() => {
+      const positions = [
+        { top: "10px", left: "10px" }, // Top Left
+        { top: "10px", left: "auto", right: "10px" }, // Top Right
+        { 
+          top: "50%", 
+          left: "50%", 
+          transform: "translate(-50%, -50%)",
+          right: "auto",
+          bottom: "auto"
+        }, // Center
+        { bottom: "10px", left: "10px", top: "auto" }, // Bottom Left
+        { bottom: "10px", left: "auto", right: "10px" } // Bottom Right
+      ];
+  
+      let animationTimeout;
+      let currentIndex = 0;
+  
+      const animateEmail = () => {
+        if (currentIndex >= positions.length) currentIndex = 0;
+        
+        // Update position and fade in
+        setPositionStyle(positions[currentIndex]);
+        setOpacity(1);
+  
+        // After 2 seconds, fade out
+        setTimeout(() => {
+          setOpacity(0);
+          
+          // Move to next position after fade out
+          setTimeout(() => {
+            currentIndex++;
+            animateEmail();
+          }, 5000);
+        }, 5000);
+      };
+  
+      // Start animation after 3 seconds
+      const initialTimeout = setTimeout(animateEmail,5000);
+  
+      return () => {
+        clearTimeout(initialTimeout);
+        clearTimeout(animationTimeout);
+      };
+    }, []);
+  
+    return (
+      <div className="relative aspect-video rounded-2xl overflow-hidden bg-black" ref={videoContainerRef}>
+        <iframe
+          className="w-full h-full"
+          src={`${video.url}?autoplay=1&mute=${volume === 0}&playback-rate=${playbackSpeed}&quality=${quality}`}
+          title={video.title}
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+        <div 
+          className="video-overlay"
+          style={{
+            ...positionStyle,
+            opacity,
+            transition: 'all 0.5s ease-in-out'
+          }}
+        >
+          <p className="text-sm text-red-500">{user?.email}</p>
+        </div>
+      </div>
+    );
+  };
   useEffect(() => {
-    // Save completed videos to local storage whenever it changes
     localStorage.setItem('completedVideos', JSON.stringify(completedVideos));
   }, [completedVideos]);
 
   useEffect(() => {
-    // Initialize first video selection
     if (!selectedVideo) {
       setSelectedVideo(MODULES[0].videos[0]);
     }
@@ -321,40 +273,29 @@ const VideoPlatform = () => {
     setExpandedModule(expandedModule === moduleId ? null : moduleId);
   };
 
-  const markVideoCompleted = () => {
-    if (selectedVideo && !completedVideos.includes(selectedVideo.id)) {
-      const newCompleted = [...completedVideos, selectedVideo.id];
-      setCompletedVideos(newCompleted);
-    }
-  };
-
   const handleNextVideo = () => {
     const currentModuleIndex = MODULES.findIndex(module => module.id === parseInt(selectedVideo.id.split('-')[0]));
     const currentModule = MODULES[currentModuleIndex];
     const currentVideoIndex = currentModule.videos.findIndex(video => video.id === selectedVideo.id);
     const nextVideoIndex = currentVideoIndex + 1;
 
-    // Mark the current video as completed
     if (!completedVideos.includes(selectedVideo.id)) {
       setCompletedVideos([...completedVideos, selectedVideo.id]);
     }
 
     if (nextVideoIndex < currentModule.videos.length) {
-      // Move to the next video in the current module
       setSelectedVideo(currentModule.videos[nextVideoIndex]);
       toast.success('Next video unlocked!', { position: 'bottom-right' });
     } else {
-      // If it's the last video in the module, move to the next module
       const nextModuleIndex = currentModuleIndex + 1;
       if (nextModuleIndex < MODULES.length) {
         const nextModule = MODULES[nextModuleIndex];
         setSelectedVideo(nextModule.videos[0]);
-        setExpandedModule(nextModule.id); // Expand the next module
+        setExpandedModule(nextModule.id);
         toast.success('Next module unlocked!', { position: 'bottom-right' });
       } else {
-        // If it's the last module, loop back to the first module
         setSelectedVideo(MODULES[0].videos[0]);
-        setExpandedModule(MODULES[0].id); // Expand the first module
+        setExpandedModule(MODULES[0].id);
         toast.success('Restarted from the first module!', { position: 'bottom-right' });
       }
     }
@@ -369,25 +310,10 @@ const VideoPlatform = () => {
     if (previousVideoIndex >= 0) {
       setSelectedVideo(currentModule.videos[previousVideoIndex]);
     } else {
-      // If it's the first video, loop back to the last video
       setSelectedVideo(currentModule.videos[currentModule.videos.length - 1]);
     }
   };
 
-  // Check if the next video is locked
-  const isNextVideoLocked = () => {
-    const currentModuleIndex = MODULES.findIndex(module => module.id === parseInt(selectedVideo.id.split('-')[0]));
-    const currentModule = MODULES[currentModuleIndex];
-    const currentVideoIndex = currentModule.videos.findIndex(video => video.id === selectedVideo.id);
-    const nextVideoIndex = currentVideoIndex + 1;
-
-    if (nextVideoIndex < currentModule.videos.length) {
-      return !completedVideos.includes(currentModule.videos[currentVideoIndex].id);
-    }
-    return false;
-  };
-
-  // Calculate progress
   const currentModuleProgress = MODULES.map(module => {
     const completed = module.videos.filter(video => completedVideos.includes(video.id)).length;
     return { id: module.id, completed, total: module.videos.length };
@@ -404,7 +330,6 @@ const VideoPlatform = () => {
       <style>{styles}</style>
       <ToastContainer />
       
-      {/* Header */}
       <header className="bg-gray-800/80 backdrop-blur-sm py-4 px-8 border-b border-gray-700/50">
         <div className="max-w-7xl mx-auto flex justify-between items-center header-content">
           <div className="flex items-center gap-3">
@@ -449,9 +374,7 @@ const VideoPlatform = () => {
         </div>
       </header>
 
-      {/* Main Grid Layout */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 p-6">
-        {/* Sidebar */}
         <aside className="md:col-span-1 space-y-4 sidebar">
           {MODULES.map(module => (
             <Accordion
@@ -465,7 +388,7 @@ const VideoPlatform = () => {
             />
           ))}
         </aside>
-        {/* Main Content */}
+        
         <main className="md:col-span-3 space-y-6 main-content">
           {selectedVideo ? (
             <>
@@ -483,14 +406,12 @@ const VideoPlatform = () => {
                   </h2>
                   <div className="space-x-4 video-controls flex">
                     <div className="flex space-x-4">
-                      {/* Previous Button */}
                       <button
                         onClick={handlePreviousVideo}
                         className="border border-purple-500 text-purple-300 px-5 py-2 rounded-lg hover:bg-purple-700 hover:text-white transition-all duration-300 shadow-lg"
                       >
                         Previous
                       </button>
-                      {/* Next Button */}
                       <button
                         onClick={handleNextVideo}
                         className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-5 py-2 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg"

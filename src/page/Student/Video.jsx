@@ -57,6 +57,73 @@ const styles = `
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
 
+  .video-overlay {
+    position: absolute;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 10;
+    max-width: 300px;
+    animation: moveEmail 0s linear infinite;
+    opacity: 0; /* Start invisible */
+  }
+
+ @keyframes moveEmail {
+  0% {
+    top: 20px;
+    left: 20px;
+    opacity: 1; /* Visible at Top Left */
+  }
+  10% {
+    opacity: 0; /* Fade out */
+  }
+  20% {
+    top: 20px;
+    left: calc(100% - 320px);
+    opacity: 1; /* Visible at Top Right */
+  }
+  30% {
+    opacity: 0; /* Fade out */
+  }
+  40% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1; /* Visible at Center */
+  }
+  50% {
+    opacity: 0; /* Fade out */
+  }
+  60% {
+    top: calc(100% - 60px);
+    left: 20px;
+    opacity: 1; /* Visible at Bottom Left */
+  }
+  70% {
+    opacity: 0; /* Fade out */
+  }
+  80% {
+    top: calc(100% - 60px);
+    left: calc(100% - 320px);
+    opacity: 1; /* Visible at Bottom Right */
+  }
+  90% {
+    opacity: 0; /* Fade out */
+  }
+  100% {
+    top: 20px;
+    left: 20px;
+    opacity: 1; /* Back to Top Left */
+  }
+}
+
+.elementToAnimate {
+  position: absolute;
+  animation: moveEmail 5s ease-in-out infinite; /* Apply the animation with infinite loop */
+  will-change: transform, opacity; /* Optimize performance */
+}
+
+
   @media (max-width: 768px) {
     .grid-container {
       grid-template-columns: 1fr;
@@ -79,11 +146,57 @@ const styles = `
     .design-gallery {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
-  }
+    .video-overlay {
+      max-width: 200px;
+    }
 
-  @media (max-width: 480px) {
-    .design-gallery {
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    @keyframes moveEmail {
+      0% {
+        top: 10px;
+        left: 10px;
+        opacity: 1; /* Visible at Top Left */
+      }
+      10% {
+        opacity: 0; /* Fade out */
+      }
+      20% {
+        top: 10px;
+        left: calc(100% - 220px);
+        opacity: 1; /* Visible at Top Right */
+      }
+      30% {
+        opacity: 0; /* Fade out */
+      }
+      40% {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 1; /* Visible at Center */
+      }
+      50% {
+        opacity: 0; /* Fade out */
+      }
+      60% {
+        top: calc(100% - 60px);
+        left: 10px;
+        opacity: 1; /* Visible at Bottom Left */
+      }
+      70% {
+        opacity: 0; /* Fade out */
+      }
+      80% {
+        top: calc(100% - 60px);
+        left: calc(100% - 220px);
+        opacity: 1; /* Visible at Bottom Right */
+      }
+      90% {
+        opacity: 0; /* Fade out */
+      }
+      100% {
+        top: 10px;
+        left: 10px;
+        opacity: 1; /* Back to Top Left */
+      }
     }
   }
 `;
@@ -145,6 +258,10 @@ const VideoPlayer = ({ video, playbackSpeed, quality, volume }) => {
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       />
+      {/* Overlay Email Text */}
+      <div className="video-overlay">
+        <p className="text-sm text-red-500">mdsaideehasan@gmail.com</p>
+      </div>
     </div>
   );
 };
@@ -348,7 +465,6 @@ const VideoPlatform = () => {
             />
           ))}
         </aside>
-
         {/* Main Content */}
         <main className="md:col-span-3 space-y-6 main-content">
           {selectedVideo ? (
@@ -410,8 +526,6 @@ const VideoPlatform = () => {
           )}
         </main>
       </div>
-
-      
     </div>
   );
 };

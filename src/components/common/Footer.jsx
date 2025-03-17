@@ -33,7 +33,7 @@ const Footer = () => {
                                 </a>
                             </li>
                             <li>
-                                <p className="hover:text-blue-500">01865467486 (Whatsapp)</p>
+                                <p className="hover:text-blue-500">01764984545 (Whatsapp)</p>
                                 <p className="hover:text-blue-500">(Available : 10:00am to 07:00pm)</p>
                             </li>
                         </ul>
@@ -65,7 +65,7 @@ const Footer = () => {
                         <ul className="mt-4 flex justify-center md:justify-start space-x-4">
                         <li>
                             <a
-                            href="https://web.facebook.com/profile.php?id=61559248393739&rdid=aQY4AjrMh0aSwVdo&share_url=https%3A%2F%2Fweb.facebook.com%2Fshare%2F18bSdQ57su%2F%3F_rdc%3D1%26_rdr#"
+                            href="https://www.facebook.com/profile.php?id=61555467427663"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-gray-300 hover:text-blue-500"
@@ -75,7 +75,7 @@ const Footer = () => {
                         </li>
                         <li>
                             <a
-                            href="https://www.youtube.com/@VIRTUALACADEMY-BD"
+                            href="https://www.youtube.com/@proacdemy"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-gray-300 hover:text-blue-500"
@@ -95,7 +95,7 @@ const Footer = () => {
                         </li>
                         <li>
                             <a
-                            href="https://www.linkedin.com/company/virtual-academy-bd"
+                            href="https://www.linkedin.com/company/saidee-hasan"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-gray-300 hover:text-blue-500"

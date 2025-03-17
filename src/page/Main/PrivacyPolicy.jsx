@@ -36,7 +36,7 @@ const PrivacyPolicy = () => {
         {
             id: 6,
             title : "Policy Updates",
-            desc : "We may update this policy as needed. Continued use of our platform means you accept these terms. For any queries, contact support@Pro  Academy .com or whatsapp(01865467486) Or don't give ther the contract number."
+            desc : "We may update this policy as needed. Continued use of our platform means you accept these terms. For any queries, contact support@Pro  Academy .com or whatsapp(01764984545) Or don't give ther the contract number."
         },
     ]
 

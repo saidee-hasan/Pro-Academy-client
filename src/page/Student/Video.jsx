@@ -529,5 +529,3 @@ const VideoPlatform = () => {
     </div>
   );
 };
-
-export default VideoPlatform;

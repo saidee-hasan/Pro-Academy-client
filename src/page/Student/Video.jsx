@@ -224,6 +224,11 @@ const VideoPlatform = () => {
           setTimeout(() => {
             currentIndex++;
             animateEmail();
+
+
+
+
+            
           }, 5000);
         }, 5000);
       };

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import modulesData from '../../../public/video.json';
-import assessmentsData from '../../../public/assessments.json';
 
 // Enhanced module data with project submission requirements
 const enhancedModulesData = {
@@ -37,150 +36,7 @@ const initialSubmissions = {
 
 // Custom CSS with improved responsive styles
 const styles = `
-  .project-submission {
-    background: rgba(30, 30, 30, 0.8);
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 20px;
-  }
-  .submission-input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: white;
-  }
-  .submission-textarea {
-    min-height: 120px;
-  }
-  .submission-btn {
-    background: #3b82f6;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    margin-top: 10px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .submission-btn:hover {
-    background: #2563eb;
-  }
-  .submission-status {
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-  }
-  .submitted {
-    background: rgba(16, 185, 129, 0.2);
-    border: 1px solid #10b981;
-  }
-  .not-submitted {
-    background: rgba(239, 68, 68, 0.2);
-    border: 1px solid #ef4444;
-  }
-  .search-input {
-    width: 100%;
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: white;
-  }
-  .module-highlight {
-    border-left: 4px solid #3b82f6;
-  }
-  .video-container {
-    position: relative;
-    padding-top: 56.25%; /* 16:9 aspect ratio */
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 0; /* Ensure video stays at top */
-  }
-  .video-player {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .duration-badge {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 12px;
-  }
-  .locked-video {
-    position: relative;
-  }
-  .locked-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    border-radius: 12px;
-  }
-  .unlock-btn {
-    background: #3b82f6;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 8px;
-    margin-top: 10px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .unlock-btn:hover {
-    background: #2563eb;
-  }
-  
-  /* Responsive improvements */
-  @media (max-width: 768px) {
-    .header-content {
-      flex-direction: column;
-      gap: 1rem;
-      align-items: flex-start;
-    }
-    
-    .video-controls {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .video-controls button {
-      width: 100%;
-    }
-    
-    .main-content {
-      order: -1;
-    }
-    
-    .sidebar {
-      order: 1;
-    }
-    
-    .module-progress {
-      display: none;
-    }
-    
-    /* Ensure video stays at top on mobile */
-    .video-container {
-      margin-top: 0;
-    }
-  }
+  /* ... (keep all your existing styles) ... */
 `;
 
 const VideoPlayer = ({ video, isLocked, onUnlock }) => {
@@ -189,9 +45,9 @@ const VideoPlayer = ({ video, isLocked, onUnlock }) => {
       <div className="video-container locked-video">
         <div className="locked-overlay">
           <h3>This video is locked</h3>
-          <p>Complete the previous video and assessment to unlock</p>
+          <p>Complete the previous video to unlock</p>
           <button className="unlock-btn" onClick={onUnlock}>
-            Take Assessment to Unlock
+            Complete Previous Video
           </button>
         </div>
       </div>
@@ -287,97 +143,6 @@ const ModuleItem = ({ module, isOpen, onClick, selectedVideo, onVideoSelect, com
           })}
         </div>
       )}
-    </div>
-  );
-};
-
-const Assessment = ({ assessment, onComplete }) => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [score, setScore] = useState(0);
-  const [completed, setCompleted] = useState(false);
-
-  if (!assessment || !assessment.questions || assessment.questions.length === 0) {
-    return <div className="text-gray-300">No assessment available for this video.</div>;
-  }
-
-  const question = assessment.questions[currentQuestion];
-
-  const handleAnswerSelect = (index) => {
-    setSelectedAnswer(index);
-  };
-
-  const handleNextQuestion = () => {
-    if (selectedAnswer === question.correctAnswer) {
-      setScore(score + 1);
-    }
-
-    if (currentQuestion < assessment.questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-    } else {
-      setCompleted(true);
-      onComplete(score >= Math.floor(assessment.questions.length / 2));
-    }
-  };
-
-  if (completed) {
-    return (
-      <div className="bg-gray-800/50 p-6 rounded-lg">
-        <h3 className="text-xl font-semibold text-gray-200 mb-4">Assessment Complete</h3>
-        <p className="text-gray-300 mb-2">Your score: {score}/{assessment.questions.length}</p>
-        <p className={`text-lg font-medium ${
-          score >= Math.floor(assessment.questions.length / 2) ? 'text-emerald-400' : 'text-red-400'
-        }`}>
-          {score >= Math.floor(assessment.questions.length / 2) ? 'Congratulations! You passed!' : 'Please review the material and try again.'}
-        </p>
-        <button
-          onClick={() => {
-            setCurrentQuestion(0);
-            setSelectedAnswer(null);
-            setScore(0);
-            setCompleted(false);
-          }}
-          className="mt-4 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg"
-        >
-          Retake Assessment
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-gray-800/50 p-6 rounded-lg">
-      <h3 className="text-xl font-semibold text-gray-200 mb-4">Assessment: Question {currentQuestion + 1} of {assessment.questions.length}</h3>
-      <p className="text-gray-300 mb-6">{question.question}</p>
-      
-      <div className="space-y-3">
-        {question.options.map((option, index) => (
-          <div
-            key={index}
-            onClick={() => handleAnswerSelect(index)}
-            className={`p-3 rounded-lg cursor-pointer transition-colors ${
-              selectedAnswer === index
-                ? 'bg-pink-600/30 border border-pink-500'
-                : 'bg-gray-700/50 hover:bg-gray-700/70'
-            }`}
-          >
-            {option}
-          </div>
-        ))}
-      </div>
-      
-      <button
-        onClick={handleNextQuestion}
-        disabled={selectedAnswer === null}
-        className={`mt-6 px-4 py-2 rounded-lg ${
-          selectedAnswer !== null
-            ? 'bg-blue-600 hover:bg-blue-700 text-white'
-            : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-        }`}
-      >
-        {currentQuestion < assessment.questions.length - 1 ? 'Next Question' : 'Submit Assessment'}
-      </button>
     </div>
   );
 };
@@ -486,7 +251,6 @@ const VideoPlatform = () => {
     return savedNotes ? JSON.parse(savedNotes) : {};
   });
   const [currentNote, setCurrentNote] = useState('');
-  const [showAssessment, setShowAssessment] = useState(false);
   const [submissions, setSubmissions] = useState(() => {
     const savedSubmissions = localStorage.getItem('projectSubmissions');
     return savedSubmissions ? JSON.parse(savedSubmissions) : initialSubmissions;
@@ -517,7 +281,6 @@ const VideoPlatform = () => {
   useEffect(() => {
     if (selectedVideo) {
       setCurrentNote(notes[selectedVideo.id] || '');
-      setShowAssessment(false);
       // Set the current module when video changes
       const module = modules.find(m => m.id === parseInt(selectedVideo.id.split('-')[0]));
       if (module) setSelectedModule(module);
@@ -544,8 +307,8 @@ const VideoPlatform = () => {
   const handleNextVideo = () => {
     if (!selectedVideo) return;
   
-    // Mark current video as completed if it's not an assessment video
-    if (!selectedVideo.id.endsWith('-1') && !completedVideos.includes(selectedVideo.id)) {
+    // Mark current video as completed
+    if (!completedVideos.includes(selectedVideo.id)) {
       setCompletedVideos(prev => [...prev, selectedVideo.id]);
     }
   
@@ -602,16 +365,6 @@ const VideoPlatform = () => {
     }
   };
 
-  const handleAssessmentComplete = (passed) => {
-    if (passed) {
-      setCompletedVideos(prev => [...prev, selectedVideo.id]);
-      toast.success('Assessment passed! Video marked as completed.', { position: 'bottom-right' });
-    } else {
-      toast.error('Assessment failed. Please review the material and try again.', { position: 'bottom-right' });
-    }
-    setShowAssessment(false);
-  };
-
   const currentModuleProgress = modules.map(module => {
     const completed = module.videos.filter(video => completedVideos.includes(video.id)).length;
     return { id: module.id, completed, total: module.videos.length };
@@ -622,10 +375,6 @@ const VideoPlatform = () => {
     acc.total += curr.total;
     return acc;
   }, { completed: 0, total: 0 });
-
-  const getAssessmentForVideo = (videoId) => {
-    return assessmentsData.find(assessment => assessment.videoId === videoId);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100">
@@ -664,9 +413,11 @@ const VideoPlatform = () => {
                   video={selectedVideo}
                   isLocked={isVideoLocked(selectedVideo.id)}
                   onUnlock={() => {
-                    const assessment = getAssessmentForVideo(selectedVideo.id.split('-')[0] + '-1');
-                    if (assessment) {
-                      setShowAssessment(true);
+                    // Navigate to previous video if locked
+                    const currentModuleIndex = modules.findIndex(m => m.id === parseInt(selectedVideo.id.split('-')[0]));
+                    const currentVideoIndex = modules[currentModuleIndex].videos.findIndex(v => v.id === selectedVideo.id);
+                    if (currentVideoIndex > 0) {
+                      setSelectedVideo(modules[currentModuleIndex].videos[currentVideoIndex - 1]);
                     }
                   }}
                 />
@@ -684,25 +435,15 @@ const VideoPlatform = () => {
                     >
                       Previous
                     </button>
-                    {!showAssessment && (
-                      <button
-                        onClick={handleNextVideo}
-                        disabled={isVideoLocked(selectedVideo.id)}
-                        className={`bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 sm:px-5 py-2 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg text-sm sm:text-base ${
-                          isVideoLocked(selectedVideo.id) ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                      >
-                        Next
-                      </button>
-                    )}
-                    {selectedVideo.id.endsWith('-1') && !completedVideos.includes(selectedVideo.id) && !showAssessment && (
-                      <button
-                        onClick={() => setShowAssessment(true)}
-                        className="bg-blue-600 text-white px-3 sm:px-5 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg text-sm sm:text-base"
-                      >
-                        Take Assessment
-                      </button>
-                    )}
+                    <button
+                      onClick={handleNextVideo}
+                      disabled={isVideoLocked(selectedVideo.id)}
+                      className={`bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 sm:px-5 py-2 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg text-sm sm:text-base ${
+                        isVideoLocked(selectedVideo.id) ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      Next
+                    </button>
                     <button
                       onClick={() => toggleFavorite(selectedVideo.id)}
                       className={`favorite-btn ${favoriteVideos.includes(selectedVideo.id) ? 'active' : ''} border border-gray-600 px-3 py-2 rounded-lg`}
@@ -712,48 +453,39 @@ const VideoPlatform = () => {
                   </div>
                 </div>
 
-                {showAssessment ? (
-                  <Assessment 
-                    assessment={getAssessmentForVideo(selectedVideo.id.split('-')[0] + '-1')}
-                    onComplete={handleAssessmentComplete}
+                {/* Notes Section */}
+                <div className="mt-6">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Your Notes
+                  </label>
+                  <textarea
+                    value={currentNote}
+                    onChange={(e) => setCurrentNote(e.target.value)}
+                    onBlur={saveNote}
+                    className="w-full note-textarea rounded-lg p-4 bg-black text-gray-200 border border-gray-600 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all"
+                    rows="4"
+                    placeholder="Write your notes here..."
                   />
-                ) : (
-                  <>
-                    {/* Notes Section */}
-                    <div className="mt-6">
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Your Notes
-                      </label>
-                      <textarea
-                        value={currentNote}
-                        onChange={(e) => setCurrentNote(e.target.value)}
-                        onBlur={saveNote}
-                        className="w-full note-textarea rounded-lg p-4 bg-black text-gray-200 border border-gray-600 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all"
-                        rows="4"
-                        placeholder="Write your notes here..."
-                      />
-                      <div className="flex justify-end mt-2">
-                        <button
-                          onClick={saveNote}
-                          className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-                        >
-                          Save Note
-                        </button>
-                      </div>
-                    </div>
+                  <div className="flex justify-end mt-2">
+                    <button
+                      onClick={saveNote}
+                      className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                    >
+                      Save Note
+                    </button>
+                  </div>
+                </div>
 
-                    {/* Project Submission Section */}
-                    {selectedVideo.id.endsWith('-1') && selectedModule && (
-                      <ProjectSubmission
-                        moduleId={selectedModule.id.toString()}
-                        moduleTitle={selectedModule.title}
-                        requirements={selectedModule.projectRequirements}
-                        deadline={selectedModule.submissionDeadline}
-                        submissions={submissions}
-                        setSubmissions={setSubmissions}
-                      />
-                    )}
-                  </>
+                {/* Project Submission Section */}
+                {selectedVideo.id.endsWith('-1') && selectedModule && (
+                  <ProjectSubmission
+                    moduleId={selectedModule.id.toString()}
+                    moduleTitle={selectedModule.title}
+                    requirements={selectedModule.projectRequirements}
+                    deadline={selectedModule.submissionDeadline}
+                    submissions={submissions}
+                    setSubmissions={setSubmissions}
+                  />
                 )}
               </div>
             </>

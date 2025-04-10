@@ -29,6 +29,7 @@ const CourseDetails = () => {
         enabled: !!user, // Only fetch if the user is logged in
     });
 
+    console.log(myCourse)
     // Fetch course details
     const { data: courseDetails = {}, isLoading: isCourseLoading } = useQuery({
         queryKey: ['course-details', id],

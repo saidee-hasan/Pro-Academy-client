@@ -62,6 +62,7 @@ const AuthProvider = ({children}) => {
       email : user?.email,
       role : 'User'
     }
+    console.log(userInfo);
     await axiosPublic.post('/users', userInfo)
   }
 

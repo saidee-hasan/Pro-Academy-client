@@ -1,3 +1,91 @@
+import FaqQuestion from "../share/FaqQuestion"
+import Title from "../share/Title"
+
+
+
+const Faq = () => {
+
+    return (
+        <section className="overflow-hidden pb-24">
+
+            <div className="max-w-[90%] xl:max-w-[1200px] mx-auto">
+
+                <Title title={'Frequently Asked Question'}></Title>
+
+                <div className="rounded-lg mt-10">
+
+                        <FaqQuestion
+                        question='What I Will Learn From Our Platform?'
+                        ans='Ethical Hacking, Frontend Web Development, Video Editing, Digital Marketing, Graphic Design'
+                        >
+                        </FaqQuestion>
+
+                        <div className="pt-4">
+                            <FaqQuestion
+                            question='Ethical Hacking'
+                            ans='In this course, you will gain a deep understanding of ethical hacking, including penetration
+                            testing, network security, vulnerability assessment, and cyber defense strategies, which will
+                            enable you to identify, analyze, and mitigate security threats in computer systems and networks.
+                            You will also develop the ability to think like a hacker to protect systems, conduct security audits,
+                            and ethically test vulnerabilities, making you well-equipped to secure organizations, prevent
+                            cyberattacks, and pursue a career in cybersecurity.'
+                            >
+                            </FaqQuestion>
+                        </div>
+
+                        <div className="pt-4">
+                            <FaqQuestion
+                            question='Frontend Web Development'
+                            ans='In this course, you will gain a deep understanding of frontend web development, including
+                            HTML, CSS, JavaScript, and modern frameworks like React or Vue.js, which will enable you to
+                            build responsive, interactive, and user-friendly websites and web applications. You will also
+                            develop the ability to design and optimize web interfaces, enhance user experience, and
+                            implement best coding practices, making you well-equipped to pursue a career as a frontend
+                            developer, work on real-world projects, or contribute to web-based applications.'
+                            >
+                            </FaqQuestion>
+                        </div>
+
+                        <div className="pt-4">
+                            <FaqQuestion
+                            question='Video Editing'
+                            ans='In this course, you will gain a deep understanding of video editing, including cutting, trimming,
+                            color grading, transitions, special effects, and audio synchronization, which will enable you to
+
+                            create professional-quality videos for various platforms, including social media, films, and
+                            advertisements. You will also develop the ability to use industry-standard editing software,
+                            enhance storytelling through visuals, and apply advanced editing techniques, making you
+                            well-equipped to pursue a career in video production, content creation, or digital media.'
+                            >
+                            </FaqQuestion>
+                        </div>
+
+                        <div className="pt-4">
+                            <FaqQuestion
+                            question='Digital Marketing'
+                            ans='In this course, you will gain a deep understanding of digital marketing, including SEO, social
+                            media marketing, content marketing, email marketing, paid advertising, and analytics, which will
+                            enable you to create and execute effective marketing strategies to grow businesses and brands
+                            online. You will also develop the ability to analyze market trends, optimize campaigns, and use
+                            data-driven strategies, making you well-equipped to pursue a career in digital marketing,
+                            manage online brand presence, and drive business growth through digital channels.'
+                            >
+                            </FaqQuestion>
+                        </div>
+
+                        <div className="pt-4">
+                            <FaqQuestion
+                            question='Graphic Design'
+                            ans='In this course, you will gain a deep understanding of graphic design, including visual
+                            composition, typography, color theory, branding, and digital illustration, which will enable you to
+                            create visually appealing designs for marketing, advertising, branding, and digital platforms. You
+                            will also develop the ability to use industry-standard design tools, communicate ideas effectively
+                            through visuals, and apply design principles to real-world projects, making you well-equipped to
+                            work as a graphic designer, create stunning visuals for businesses, or start a freelance design
+                            career.'
+                            >
+                            </FaqQuestion>
+                        </div>
 
                         <div className="pt-4">
                             <FaqQuestion
